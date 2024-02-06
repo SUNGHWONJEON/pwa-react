@@ -10,7 +10,7 @@ const MessagePicture = () => {
         <div className="message-picture">
             
             {/* <Camera videoSave={videoSave} /> */}
-            <NewCamera />
+            <CameraModule />
 
             <div className="message-box">
                 <input className="message-btn grey" type="button" value="녹화저장" />
