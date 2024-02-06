@@ -1,0 +1,38 @@
+// basic layout height size
+$header_8: 8rem;
+$header_6: 6rem;
+$header_5: 5rem;
+
+$content_size_1: 151.5rem;
+$content_size_2: 141rem;
+
+// color palette
+$white: #ffffff;
+$black: #000000;
+
+$backgroundColor: #fa6600;
+$backgroundColor2: #e7e7e7;
+$backgroundColor3: #f3f3f3;
+$fontColor1: #4d4d4d;
+$placeholder: #a2a2a2;
+
+// responsive
+$hover: 'screen and (min-width: 1024px)';
+$pc_max: 'screen and (max-width: 1600px)';
+$pc_large: 'screen and (max-width: 1400px)';
+$pc_middle: 'screen and (max-width: 1280px)';
+$tablet: 'screen and (max-width: 1023px)';
+$mobile_large: 'screen and (max-width: 768px)';
+$mobile_middle: 'screen and (max-width: 375px)';
+$mobile_small: 'screen and (max-width: 320px)';
+
+// max width
+.max-width-1416 {
+  width: 100%;
+  max-width: 145rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+

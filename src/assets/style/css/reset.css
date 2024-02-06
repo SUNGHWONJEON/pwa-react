@@ -1,0 +1,188 @@
+@charset "UTF-8";
+
+/* Text
+@font-face {
+    font-family: 'HyundaiSans Text KR';
+    font-weight: 500;
+    src: local('HyundaiSansTextKRRegular'), url('../../fonts/WOFF/HyundaiSansTextKRRegular.woff') format('woff');
+  }
+  @font-face {
+    font-family: 'HyundaiSans Head KR';
+    font-weight: 400;
+    src: local('HyundaiSansHeadKRRegular'), url('../../fonts/WOFF/HyundaiSansHeadKRRegular.woff') format('woff');
+  }
+  @font-face {
+    font-family: 'HyundaiSans Head KR';
+    font-weight: 500;
+    src: local('HyundaiSansHeadKRMedium'), url('../../fonts/WOFF/HyundaiSansHeadKRMedium.woff') format('woff');
+  }
+  @font-face {
+    font-family: 'HyundaiSans Head KR';
+    font-weight: 600;
+    src: local('HyundaiSansHeadKRBold'), url('../../fonts/WOFF/HyundaiSansHeadKRBold.woff') format('woff');
+  } */
+
+/* reset */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+html,
+body {
+  font-family: 'HyundaiSans Text KR', 'sans-serif';
+}
+
+html,
+body {
+  width: 100%;
+  font-size: 10px;
+}
+
+ol,
+ul,
+li {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  border: 0;
+  outline: 0;
+  border-radius: 0;
+  cursor: pointer;
+  background-color: transparent;
+  font-family: 'HyundaiSans Text KR', 'sans-serif';
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.hidden {
+  display: none;
+}
