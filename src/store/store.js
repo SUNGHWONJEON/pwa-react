@@ -2,9 +2,26 @@ import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 const { persistAtom } = recoilPersist();
 
-export const cameraStat = atom({
-    key:'cameraStat',
-    default:"",
+export const addressData = atom({
+    key:'addressData',
+    default:[
+        {
+            receiverId: '100002',
+            receiverName: '박길동',
+            receiverRelation: '손자',
+            receiverPhone: '010-1234-5678',
+            isDelete: false,
+            sendCount: 2
+        },
+        {
+            receiverId: '1000302',
+            receiverName: '박상균',
+            receiverRelation: '자녀',
+            receiverPhone: '010-1234-5678',
+            isDelete: false,
+            sendCount: 1
+        }
+    ],
     effects_UNSTABLE: [persistAtom],
 })
 
@@ -46,17 +63,17 @@ export const messageData = atom({
                     {
                         attachSize: '1234',
                         attachType: 'video',
-                        attachName: 'est.webp',
+                        attachName: '1est.webp',
                     },
                     {
                         attachSize: '5678',
                         attachType: 'image',
-                        attachName: 'image5678',
+                        attachName: '1image5678',
                     },
                     {
                         attachSize: '9999',
                         attachType: 'audio',
-                        attachName: 'audio5678',
+                        attachName: '1audio5678',
                     }
                 ]
             },
@@ -89,17 +106,17 @@ export const messageData = atom({
                     {
                         attachSize: '1234',
                         attachType: 'video',
-                        attachName: 'test.webp',
+                        attachName: '2test.webp',
                     },
                     {
                         attachSize: '5678',
                         attachType: 'image',
-                        attachName: 'image5678',
+                        attachName: '2image5678',
                     },
                     {
                         attachSize: '9999',
                         attachType: 'audio',
-                        attachName: 'audio5678',
+                        attachName: '2audio5678',
                     }
                 ]
                 
@@ -125,17 +142,17 @@ export const messageData = atom({
                     {
                         attachSize: '1234',
                         attachType: 'video',
-                        attachName: 'video1234',
+                        attachName: '3video1234',
                     },
                     {
                         attachSize: '5678',
                         attachType: 'image',
-                        attachName: 'image5678',
+                        attachName: '3image5678',
                     },
                     {
                         attachSize: '9999',
                         attachType: 'audio',
-                        attachName: 'audio5678',
+                        attachName: '3audio5678',
                     }
                 ]
                 

@@ -6,6 +6,7 @@ import MessageMain from '../pages/MessageMain';
 import MessagePicture from '../pages/MessagePicture';
 import MessageWrite from '../pages/MessageWrite';
 import MessageAttach from '../pages/MessageAttach';
+import MessageInbox from '../pages/MessageInbox';
 
 
 export let router = createBrowserRouter([ 
@@ -34,6 +35,10 @@ export let router = createBrowserRouter([
     {
         path: 'message/attatch',
         element: <MessageAttach />,
+    },
+    {
+        path: 'inbox',
+        element: <MessageInbox />,
     }
 ]);
 
