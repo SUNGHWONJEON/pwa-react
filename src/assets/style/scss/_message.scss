@@ -99,19 +99,7 @@
     }
 }
 
-
-.message-picture {
-
-    .camera-container {
-
-        .camera-video {
-            width: 100%;
-            height: 80vh;
-        }
-    }
-}
-
-
+/*write*/
 .message-box {
 
     margin-bottom: 2rem;
@@ -159,21 +147,148 @@
         }
     }
 
-    .message-btn-attach {
-        width: 49%;
-        padding: 2rem 0;
-        background-color: $backgroundColor3;
-        border-radius: 5px;
+
+    /*첨부파일*/
+    .message-attach-btn-box {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        .message-btn-attach {
+            width: 49%;
+            padding: 2rem 0;
+            background-color: $backgroundColor3;
+            border-radius: 5px;
+        }
+
+        label {
+            width: 49%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .message-btn-attach-img {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    .message-attach-box {
+        .selected-image {
+
+        }
+
+       
+    }
+    
+}
+
+.message-box.inbox{
+    margin-bottom: 0;
+
+    .message-send-title {
+        display: flex;
+        height: 4rem;
+        align-items: center;
+        border-top: 1px solid $backgroundColor2;
+
+        span {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    }
+}
+
+.message-send-container.receiver {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    padding-top: 5rem;
+    background-color: #fff;
+}
+
+.message-send-container {
+
+
+    .message-send-inbox {
+        width: 100%;
+        flex-direction: column;
+        li.inbox-list.toggleCheck {
+            background-color: azure;
+        }
+        li {
+            width: 100%;
+            height: 5rem;
+            border-top: 1px solid $backgroundColor2;
+            border-bottom: 1px solid $backgroundColor2;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+
+            .inbox-list-box-btn{
+                width: 100%;
+            }
+
+            .inbox-list-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+                font-size: 1.1rem;
+
+                .inbox-list-textbox {
+                    display: flex;
+                    align-items: center;
+                    span {
+                        margin-right: .5rem;
+
+                        b {
+                            color: red;
+                        }
+                    }
+
+                    span.inbox-receiver-name {
+                        font-weight: bold;
+                    }
+
+                    span.inbox-receiver-phone {
+                        color: $fontColor2;
+                    }
+
+                    span.inbox-receiver-count {
+                        margin-left: .3rem;
+                    }
+                }
+
+                button.inbox-list-delete {
+                    margin: 0.5rem;
+                }
+            }
+
+        }
+        
     }
 }
 
 .message-box.attach {
+    
+}
+
+.inbox-btn-box {
+    width: 100%;
+    height: 5rem;
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
 }
 
 .message-write-pop {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -266,3 +381,17 @@
     background-color: $backgroundColor3;
 }
 
+
+
+
+
+.message-picture {
+
+    .camera-container {
+
+        .camera-video {
+            width: 100%;
+            height: 80vh;
+        }
+    }
+}

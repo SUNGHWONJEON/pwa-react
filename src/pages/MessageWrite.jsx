@@ -4,17 +4,21 @@ import { messageData } from "../store/store";
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import HeaderTop from "../components/header/HeaderTop";
+import AudioRecorder from '../components/common/AudioRecorder';
 import axios from 'axios';
+import Loading from '../components/common/Loading';
+import ReceiverAdd from '../components/message/ReceiverAdd';
 
 const MessageWrite = (props) => {
     const [messageOrigin, setMessageOrigin] = useRecoilState(messageData);
     const messagePage = useParams();
     const [writeType, setWriteType] = useState(messagePage.pageNum === undefined || messagePage.pageNum === null ? 'new' : 'update');
-    const [popupVisible,setPopupVisible] = useState(false);
+    
     const [inputValue, setInputValue] = useState({});
     const navigate = useNavigate();
     const [currentData, setCurrentData] = useState({});
     const [textLength, setTextLength] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if(writeType === 'new' || messagePage.pageNum === undefined || messagePage.pageNum === null) {
@@ -36,48 +40,6 @@ const MessageWrite = (props) => {
         }
     }, [])
 
-
-
-    //x버튼 클릭시 받는 사람 삭제
-    const onReceiverDelete = (e, id) => {
-        //지우기
-        e.preventDefault();
-        console.log('id : ' + id);
-        let updatedMsgReceiver = currentData.msgReceiver.filter(receiver => String(receiver.receiverId) !== String(id));
-        let updatedMessage = { ...currentData, msgReceiver: updatedMsgReceiver };
-        setCurrentData(updatedMessage);
-        console.log('onReceiverDelete == updatedMessage : ' + JSON.stringify(updatedMessage));
-        
-    }
-
-    //팝업 안보이게
-    const onPopDimed = () => {
-        setPopupVisible(false);
-    }
-
-    //팝업 보이게
-    const onPopShow = (e) => {
-        e.preventDefault();
-        setPopupVisible(true);
-        setInputValue({
-            receiverName: '',
-            receiverPhone: '',
-            receiverRelation: '',
-        })
-    }
-
-
-    //input값이 바뀔때마다 value값 저장
-    const onChanged = (e) => {
-        const {name, value} = e.target;
-        console.log('name : ' + name);
-        console.log('value : ' + value);
-        setInputValue((prevValues) => ({
-            ...prevValues,
-            [name]: value
-        }))
-    }
-
     const onTextArea = (e) => {
         const tempMsgData = {...currentData};
         tempMsgData.msgText = e.target.value;
@@ -86,26 +48,6 @@ const MessageWrite = (props) => {
         setTextLength(e.target.value.length);
     }
 
-    //받는 사람 저장
-    const onSavedReceivePerson = (e) => {
-        
-        //받는사람
-        let receiver = {
-            receiverId: Date.now(),
-            receiverName: inputValue.receiverName,
-            receiverRelation: inputValue.receiverRelation || '자녀',
-            receiverPhone: inputValue.receiverPhone,
-            isDelete: false,
-            sendCount: 0
-        }
-        
-        console.log('receiver : ' + JSON.stringify(receiver));
-        let updateMsgReceiver = [...currentData.msgReceiver, receiver];
-        let updatedMessage = {...currentData, msgReceiver: updateMsgReceiver};
-        setCurrentData(updatedMessage);
-        onPopDimed();
-        console.log('newMessageData 2 : ' + currentData);
-    }
 
     //임시 저장하기
     const saveMessageData = (type) => {
@@ -152,93 +94,175 @@ const MessageWrite = (props) => {
         e.preventDefault();
         saveMessageData('temp');
         navigate('/message');
+
+        console.log('임시저장 클릭 == currentData : '+ currentData);
     }
 
     //저장 눌렀을 시 저장되고 메인 페이지로 넘어감
-    const onSubmitMessage = async (e) => {
-        localStorage.removeItem('recoil-persist');
-        return;
-        /*
+    const onSubmitMessage = (e) => {
         e.preventDefault();
+        //localStorage.removeItem('recoil-persist');//저장되어 있는 값 초기화
+        
         let sendData = new FormData();
+        const attachments = currentData.msgAttach;//첨부파일 목록
+        const receiver = currentData.msgReceiver;//수신인 목록
 
-        const sendMessage = { ...messageOrigin };
-        
-
-        
         //sendData.append('message', new Blob([JSON.stringify(messageOrigin)], { type: "application/json" }));
-
-
-
-        //첨부파일
-        attachments.map(attach => {
-            sendData.append('attachments', new Blob(attach));
+        const tempMsg = {
+            userId: messageOrigin.userId,
+            msgText: currentData.msgText,
+            msgId: currentData.msgId,
+            msgSaved: currentData.msgSaved
+        }
+        //sendData.append('message', JSON.stringify(tempMsg));
+        sendData.append('message', new Blob([JSON.stringify(tempMsg)], { type: "application/json" }));
+        //수신인 목록 
+        console.log('receiver : ' + JSON.stringify(receiver));
+        sendData.append('receiver', new Blob([JSON.stringify(receiver)], { type: "application/json" }));
+        receiver.map(re => {
+            
+            //sendData.append('receiver', JSON.stringify(re));
         })
-        console.log(Array.from(sendData))
+        
+        //첨부파일
+        attachments.map(at => {
+            console.log('at.attach : ' + at.attach);
+            sendData.append('attachments', at.attach);
+        })
+        
+        console.log('sendData : ' + Array.from(sendData));
         
 
         //로딩시작하고
-        
+        setIsLoading(true);
 
-        axios.post('/api/message', sendData, {
+        axios.post('http://192.168.31.141:2222/api/message', sendData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         }).then(res => {
-            console.log('res : ' + res.data);
+            console.log('메시지 등록 성공 res : ' + JSON.stringify(res.data));
             //로딩 끝내고
+            setIsLoading(false);
 
         }).catch(error => {
-            console.log('error : ' + error);
+            console.log('메시지 등록 실패 : ' + error);
         })
-
-
-        formData.append('file', this.imageFile);
-            formData.append('userNum', this.tempUserNum);
-
-            this.$axios.post('/api/message', formData, {
-                headers:{
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-            .then(res => {
-                alert('사진 등록 성공');
-                console.log('res.data : ' + res.data);
-                console.log('res stringify : ' + JSON.stringify(res))
-                //로딩 시작
-                this.isLoading = true;
-                this.callPythonApi(res.data[0], res.data[1], res.data[2]);
-                onTempSave();
-            })
-            .catch(err => {
-                alert('게시글 등록 실패');
-                console.log(err);
-            })
-            */
-
     }
 
-    // const getFile = (e) => {
+    //용량 5메가 까지 허용
+    
 
-    //     const file = e.target.files;
-    //     const blob = new Blob(file)
-    //     const newAttachData = {
-    //         attachSize: blob.size,
-    //         attachType: blob.type,
-    //         attachName: file,
-    //     }
 
-    //     const tempCurrentData = {
-    //         ...currentData,
-    //         msgAttach: [
-    //             ...currentData.msgAttach,
-    //             newAttachData
-    //         ]
-    //     };
+    //일반 파일 첨부
+    const onGetFile = (e) => {
+        //첨부파일 배열에 담기
+        const files = Array.from(e.target.files);
+        console.log('files[0] : ' + JSON.stringify(files));
+        if(files[0]){
+            //이미지가 있을때 url첨부하여 미리보기로 보이기
+        }
+
+        const newAttachData = files.map(f => {
+            const blob = new Blob([f], { type: f.type }); // Blob 생성자에 배열을 전달하여 Blob 객체 생성
+            return {
+                attachSize: blob.size,
+                attachType: blob.type,
+                attachName: f.name,
+                attach: blob
+            };
+        });
+
+        const tempCurrentData = {
+            ...currentData,
+            msgAttach: [
+                ...currentData.msgAttach,
+                ...newAttachData
+            ]
+        };
         
-    //     setCurrentData(tempCurrentData);
-    //     console.log('getFile == tempCurrentData : ' + tempCurrentData);
-    // }
+        setCurrentData(tempCurrentData);
+        console.log('getFile == tempCurrentData : ' + JSON.stringify(tempCurrentData));
+        //console.log('getFile == currentData : ' + JSON.stringify(currentData)); //=>바로 적용이 안돼서 확인 불가 useEffect로 확인해야만 함
+    }
+
+    //오디오 파일 첨부
+    const getAudioFile = (audio, url, blob) => {
+        console.log('getAudioFile === audio : ' + audio);
+        console.log('getAudioFile === url : ' + url);
+        console.log('getAudioFile === blob : ' + blob);
+
+        const newAttachData = {
+            attachSize: blob.size,
+            attachType: blob.type,
+            attachName: url,
+            attach: blob
+        };
+
+        const tempCurrentData = {
+            ...currentData,
+            msgAttach: [
+                ...currentData.msgAttach,
+                newAttachData
+            ]
+        };
+
+        setCurrentData(tempCurrentData);
+        console.log('getAudioFile === tempCurrentData : ' + JSON.stringify(tempCurrentData));
+        console.log('getAudioFile === currentData : ' + JSON.stringify(currentData));
+    }
+
+    //첨부파일 삭제하기
+    const onDeleteFile = (e, key) => {
+        e.preventDefault();
+        
+        const updateAttach = currentData.msgAttach.filter((el, idx) => idx !== key );
+
+        setCurrentData(prevData => ({
+            ...prevData,
+            msgAttach: updateAttach
+        }))
+    }
+
+    //===============수신자 첨부 부분===================
+    //input값이 바뀔때마다 value값 저장
+    const onChanged = (val) => {
+        console.log('val : ' + val);
+        setInputValue((prevValues) => ({
+            ...prevValues,
+            [val.name]: val.value
+        }))
+    }
+
+    //받는 사람 저장
+    const onSavedReceivePerson = (receiver) => {
+
+        //currentData.msgReceiver에 이미 receiver의 핸드폰 번호가 있으면 추가하지 않기
+        const filteredReceiver = receiver.filter(item => !currentData.msgReceiver.find(exist => exist.receiverPhone === item.receiverPhone));
+        const updatedMsgReceiver = [...currentData.msgReceiver, ...filteredReceiver];
+        const updatedMessage = { ...currentData, msgReceiver: updatedMsgReceiver };
+
+        //currentData 상태를 업데이트
+        setCurrentData(updatedMessage);
+
+        console.log('newMessageData 2 receiver : ' + JSON.stringify(receiver));
+        console.log('newMessageData 2 filteredReceiver : ' + JSON.stringify(filteredReceiver));
+        console.log('newMessageData 2 updatedMessage : ' + JSON.stringify(updatedMessage));
+        console.log('newMessageData 2 currentData : ' + JSON.stringify(currentData));
+    }
+
+    //x버튼 클릭시 받는 사람 삭제
+    const onReceiverDelete = (e, id) => {
+        //지우기
+        e.preventDefault();
+        console.log('id : ' + id);
+        let updatedMsgReceiver = currentData.msgReceiver.filter(receiver => String(receiver.receiverId) !== String(id));
+        let updatedMessage = { ...currentData, msgReceiver: updatedMsgReceiver };
+        setCurrentData(updatedMessage);
+        console.log('onReceiverDelete == updatedMessage : ' + JSON.stringify(updatedMessage));
+        
+    }
+    //===============수신자 첨부 부분end===================
 
     return(
         <>
@@ -262,44 +286,68 @@ const MessageWrite = (props) => {
                         <div>{textLength}/1000</div>
                     </div>
                     
-                    {/* 첨부하기 
+                    {/* 첨부하기 */}
                     <div className="message-box attach">
-                        <input type="file" onChange={getFile} multiple="multiple" className="message-btn-attach">
-                            첨부하기
-                        </input>
-                        <button className="message-btn-attach">
-                            촬영하기
-                        </button>
-                    </div>*/}
+                        <div className="message-attach-btn-box">
 
-                    {/* 수신인추가 */}
-                    <div className="message-box send">
-                        <div className="message-send-title">
-                            <span>받는사람<b>*</b></span>
-                            <button  className="message-btn-bring" onClick={onPopShow}>
-                                + 수신인추가
-                            </button>
-                        </div>
-                        
-                        <ul className="message-send-box">
+                            <input type="file" className="message-btn-attach" onChange={onGetFile} multiple="multiple"
+                                name="attachFile" id="upload-file-img"  hidden/>
+                            <label htmlFor="upload-file-img">
+                                <img src="/img/add_file.png" className="message-btn-attach-img" />
+                            </label>
                             
-                            {
-                                currentData !== null && currentData !== undefined && Object.keys(currentData).length > 0 ? 
-                                    
-                                    currentData.msgReceiver.map((receiver, key)=> {
-                                        return(
-                                            <li key={key}>
-                                                <span>{receiver.receiverName}({receiver.receiverRelation})</span>
-                                                <button onClick={(e) => onReceiverDelete(e, receiver.receiverId)}>x</button>
-                                            </li>
-                                        )
-                                    })
-                                    
-                                : <p>Loading...</p>
-                            }
+                            {/* 음성녹음 */}
+                            <AudioRecorder className="message-btn-attach" getAudioFile={getAudioFile}/>
+                        </div>
 
-                        </ul>
+
+                        <div className="message-attach-box">
+                            <ul>
+                                {
+                                    currentData.msgAttach !== null && currentData.msgAttach !== undefined ? 
+                                        currentData.msgAttach.length > 0 ? 
+                                            currentData.msgAttach.map((attach, key) => {
+                                                return(
+                                                    <li className="selected-image" key={key}>
+                                                        {/* <img className="sel-img" src={}/> */}
+                                                        <span>{attach.attachName}</span>
+                                                        <button className="file-delete-btn" onClick={(e) => onDeleteFile(e, key)}>
+                                                            x
+                                                            <img src="" />
+                                                        </button>
+                                                    </li>
+                                                )
+                                            })
+                                        : ''
+                                    : ''
+                                }
+
+                            </ul>
+                        </div>
                     </div>
+                    {/* 수신인 추가 팝업 */}
+                    <ReceiverAdd inputValue={inputValue} componentType={'receiver'}
+                        setInputValue={setInputValue} onChanged={onChanged} onSavedReceivePerson={onSavedReceivePerson}/>
+                    
+                    {/* 수신인 리스트 */}
+                    <ul className="message-send-box">
+                        {
+                            currentData.msgReceiver !== null && currentData.msgReceiver !== undefined && Object.keys(currentData.msgReceiver).length > 0 ? 
+                            
+                            //메시지에서 받을사람일때
+                            currentData.msgReceiver.map((receiver, key)=> {
+                                    return(
+                                        <li key={key}>
+                                            <span>{receiver.receiverName}({receiver.receiverRelation})</span>
+                                            <button onClick={(e) => onReceiverDelete(e, receiver.receiverId)}>x</button>
+                                        </li>
+                                    )
+                                })
+                                
+                            : ''
+                        }
+                    </ul>
+                    
 
                     {/* 버튼 박스 */}
                     <div className="message-box">
@@ -310,40 +358,8 @@ const MessageWrite = (props) => {
 
                     </div>
                 </form>
-                
-                {/* 수신인 추가 팝업 */}
-                <div className={`message-write-pop ${!popupVisible ? '' : 'show'}`}>
-                    <button className="message-write-pop-dimed" onClick={onPopDimed}></button>
-                    <div className="message-write-pop-box">
-                        <div className="message-write-pop-head">
-                            <span>받는사람</span>
-                            <button className="message-btn-bring">+ 연락처 가져오기</button>
-                        </div>
-
-                        <div className="message-write-pop-div">
-                            <div>이름<b>*</b></div>
-                            <input type="text" name="receiverName" onChange={onChanged} value={inputValue.receiverName || ''} />
-                        </div>
                         
-                        <div className="message-write-pop-div">
-                            <div>휴대폰번호<b>*</b></div>
-                            <input type="text" name="receiverPhone" onChange={onChanged} value={inputValue.receiverPhone || ''} />
-                        </div>
-
-                        <div className="message-write-pop-div">
-                            <div>수신인과의 관계<b>*</b></div>
-                            <select name="receiverRelation" onChange={onChanged} value={inputValue.receiverRelation || '자녀'}>
-                                <option value="자녀">자녀</option>
-                                <option value="부인">부인</option>
-                            </select>
-                        </div>
-                        <div className="message-write-pop-div">
-                            <button className="message-btn grey" onClick={onPopDimed}>취소</button>
-                            <button className="message-btn orange" onClick={onSavedReceivePerson}>저장</button>
-                        </div> 
-                    </div>
-                    
-                </div>
+                
                 
                 
             </div>

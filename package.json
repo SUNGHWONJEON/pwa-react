@@ -35,7 +35,7 @@
     "workbox-streams": "^6.6.0",
     "zustand": "^4.5.0"
   },
-  "proxy": "http://localhost:1111",
+  "proxy": "http://localhost:2222",
   "scripts": {
     "start": "set PORT=1111 && react-scripts start",
     "build": "react-scripts build BUILD_PATH='C:/dev/6.practice/react_pwa/pwa_boot/src/main/resources/static' ",
