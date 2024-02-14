@@ -52,24 +52,26 @@ const ReceiverAdd = (props) => {
             props.onSavedReceivePerson(data);//받는 사람 저장
         }
         
-        
+        onCloseList();
     }
 
     //1. 받는 사람 직접입력하여 저장
     const onSavedReceivePerson = (e) => {
         
-        //받는사람
-        let receiver = {
-            receiverId: Date.now(),
-            receiverName: props.inputValue.receiverName,
-            receiverRelation: props.inputValue.receiverRelation || '자녀',
-            receiverPhone: props.inputValue.receiverPhone,
-            isDelete: false,
-            sendCount: 0
+        if(props.inputValue != undefined && props.inputValue !== null && props.inputValue.receiverName !== '' && props.inputValue.receiverPhone !== '') {
+            //받는사람
+            let receiver = {
+                receiverId: Date.now(),
+                receiverName: props.inputValue.receiverName,
+                receiverRelation: props.inputValue.receiverRelation || '자녀',
+                receiverPhone: props.inputValue.receiverPhone,
+                isDelete: false,
+                sendCount: 0
+            }
+
+            console.log('receiver : ' + JSON.stringify(receiver));
+            saveAll([receiver]);//받는 사람 저장
         }
-        
-        console.log('receiver : ' + JSON.stringify(receiver));
-        saveAll([receiver]);//받는 사람 저장
     }
     
     //2. 받는 사람 수신인리스트에서 등록
@@ -79,7 +81,6 @@ const ReceiverAdd = (props) => {
         if(tempData !== null && tempData !== undefined && tempData && tempData.length > 0) {
             saveAll(tempData);//받는 사람 저장
         }
-        
     }
 
     //수신인 리스트에서 삭제
@@ -90,15 +91,20 @@ const ReceiverAdd = (props) => {
             setAddressDataOrigin(filteredData);
             console.log('?? filteredData : ' + JSON.stringify(filteredData));
             console.log('?? addressDataOrigin : ' + JSON.stringify(addressDataOrigin));
-
+            
         }else {
-
+            
         }
-        
     }
 
     const onVisibleReceiverList = () => {
         setVisibleReceiverList(!visibleReceiverList);
+        props.setWrapperScrolledType('not-scrolled');
+    }
+    
+    const onCloseList = () => {
+        setVisibleReceiverList(false);
+        props.setWrapperScrolledType('');
     }
     
     
@@ -118,7 +124,7 @@ const ReceiverAdd = (props) => {
                     }
                 </div>
             </div>
-            
+                    
             {/* 수신인 추가 팝업 */}
             <div className={`message-write-pop ${!popupVisible ? '' : 'show'}`}>
                 
@@ -156,11 +162,19 @@ const ReceiverAdd = (props) => {
 
             {/* 리스트 */}
             {
+                
                 componentType === 'inbox' ? 
-                    <ReceiverList componentType={componentType} msgReceiver={addressDataOrigin} onAddReceiver={onAddReceiver} onInboxReceiverDelete={onInboxReceiverDelete}/> :
-                    visibleReceiverList ? 
-                        <ReceiverList componentType={componentType} msgReceiver={addressDataOrigin} onAddReceiver={onAddReceiver} onInboxReceiverDelete={onInboxReceiverDelete}/>
-                    : ''
+                    <ReceiverList msgReceiver={addressDataOrigin} onAddReceiver={onAddReceiver} 
+                        onInboxReceiverDelete={onInboxReceiverDelete} componentType={componentType}/> 
+                    :
+                        visibleReceiverList ? 
+                            <div className={`message-send-container ${componentType === 'receiver' ? 'receiver' : ''}`}>
+                                <button onClick={onCloseList}>close</button>
+                                <ReceiverList msgReceiver={addressDataOrigin} onAddReceiver={onAddReceiver} 
+                                    onInboxReceiverDelete={onInboxReceiverDelete}  componentType={componentType}/>
+                                
+                            </div>
+                        : ''
             }
 
             
