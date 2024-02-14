@@ -7,8 +7,8 @@ import HeaderTop from '../components/header/HeaderTop';
 //수신자 목록을 저장해야 할 부분
 const MessageInbox = () => {
     const [addressDataOrigin, setAddressDataOrigin] = useRecoilState(addressData);
+    const [wrapperScrolledType, setWrapperScrolledType] = useState('');
     const [inputValue, setInputValue] = useState({});
-    const [receiverData, setReceiverData] = useState({});
 
     useEffect(() => {
     }, [])
@@ -41,8 +41,7 @@ const MessageInbox = () => {
             <HeaderTop />
             <div className="message-wrapper">
                 <div className="message-container">
-                    
-                    <ReceiverAdd inputValue={inputValue} componentType={'inbox'}
+                    <ReceiverAdd inputValue={inputValue} componentType={'inbox'} setWrapperScrolledType={setWrapperScrolledType}
                         setInputValue={setInputValue} onChanged={onChanged} onSavedReceivePerson={onSavedReceivePerson}/>
                 </div>
             </div>

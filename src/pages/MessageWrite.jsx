@@ -18,12 +18,13 @@ const MessageWrite = (props) => {
     const navigate = useNavigate();
     const [currentData, setCurrentData] = useState({});
     const [textLength, setTextLength] = useState(0);
+    const [wrapperScrolledType, setWrapperScrolledType] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if(writeType === 'new' || messagePage.pageNum === undefined || messagePage.pageNum === null) {
             setCurrentData({
-                msgId: null,
+                msgId: Date.now(),
                 msgSaved: null,
                 msgText: '',
                 crateDate: '',
@@ -267,7 +268,7 @@ const MessageWrite = (props) => {
     return(
         <>
         <HeaderTop />
-        <div className="message-wrapper">
+        <div className={`message-wrapper ${wrapperScrolledType ? 'not-scrolled' : ''}`}>
             <div className="message-container">
                 <form onSubmit={onSubmitMessage}>
 
@@ -326,7 +327,7 @@ const MessageWrite = (props) => {
                         </div>
                     </div>
                     {/* 수신인 추가 팝업 */}
-                    <ReceiverAdd inputValue={inputValue} componentType={'receiver'}
+                    <ReceiverAdd inputValue={inputValue} componentType={'receiver'} setWrapperScrolledType={setWrapperScrolledType}
                         setInputValue={setInputValue} onChanged={onChanged} onSavedReceivePerson={onSavedReceivePerson}/>
                     
                     {/* 수신인 리스트 */}

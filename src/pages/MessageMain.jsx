@@ -17,7 +17,8 @@ const MessageMain = (props) => {
                 title: '글작성',
                 icon: '',
                 link: '/message/write'
-            },
+            }
+            /*,
             {
                 title: '촬영하기',
                 icon: '',
@@ -28,10 +29,47 @@ const MessageMain = (props) => {
                 icon: '',
                 link: '/message/attatch'
             }
+            */
         ])
         
         console.log('==message : ', JSON.stringify(message));
     },[]);
+
+    const onMessageDelete = (id) => {
+
+        if(window.confirm('메시지를 삭제하시겠습니까?')) {
+            const updateList = message.msgList.filter(item => item.msgId !== id);
+            const updateMessage = {
+                ...message,
+                msgList: updateList
+            }
+            console.log('message : ' + JSON.stringify(message));
+            console.log('updateMessage : ' + JSON.stringify(updateMessage));
+            setMessage(updateMessage);
+            
+        }
+    }
+
+    const checkMobile = () => {
+        var UA = navigator.userAgent.toLowerCase(); //userAgent 체크
+        if ( UA.indexOf('android') > -1) {
+            //Android
+            return "android";
+        } else if ( UA.indexOf("iphone") > -1 || UA.indexOf("ipad") > -1 || UA.indexOf("ipod") > -1 ) {
+            //IOS
+            return "ios";
+        } else {
+            //Android, IOS 외
+            return "other";
+        }
+    }
+
+    const sendSMS = () => {
+        const text = '문자보내기\nSMS SEND TEST';
+        const phoneNumber = '01082789969'; // 전화번호
+        const url = 'sms:' + phoneNumber + (checkMobile() === 'ios' ? '&' : '?') + 'body=' + encodeURIComponent(text);
+        window.location.href = url;
+    }
     
     return(
         <>
@@ -59,7 +97,7 @@ const MessageMain = (props) => {
                 <ul className="message-main-list">
                     {
                         message !== undefined && message !== null && message ? 
-
+                            
                             message.msgList !== undefined && message.msgList !== null && message.msgList.length > 0 ? 
                                 message.msgList.map((msg, key) => {
                                     return(
@@ -77,10 +115,11 @@ const MessageMain = (props) => {
                                                     </div>
                                                     <div className="msg-list-text">{msg.crateDate}</div>
                                                 </div>
-                                                <div className="msg-list-box delete">
-                                                    <BiAlarmExclamation />
-                                                </div>
                                             </a>
+                                            <button className="msg-list-box delete" onClick={() => onMessageDelete(msg.msgId)}>
+                                                <BiAlarmExclamation />
+                                            </button>
+                                            
                                         </li>
                                     )
                                 }) 
@@ -90,6 +129,7 @@ const MessageMain = (props) => {
 
                 </ul>
             </div>
+            <button onClick={sendSMS}>---메시지 보내기---</button>
         </>
     );
 };

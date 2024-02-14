@@ -45,32 +45,23 @@ const ReceiverList = (props) => {
         setReceiverListData(newData);
 
         console.log('=====JSON.stringify(receiverListData) : ' + JSON.stringify(receiverListData));
-        //1. 받는 사람 리스트에 저장하거나 
-        //2. 메시지 받는 사람 리스트에 저장함
-
-        //구분해야 함
         
-
     }
 
     const onAddReceiverMessage = (e) => {
         e.preventDefault();
         const tempData = receiverListData.filter(item => item.toggleCheck === true)
         .map(({ toggleCheck, ...rest }) => rest);
-        
+        console.log('tempData : ' + tempData);
         props.onAddReceiver(tempData);
     }
     
-    //메시지에 내가 선택한 수신인 등록 되게
-    const onAddMessage = () => {
-        //선택한 리스트 
-    }
 
     return(
         <>
             {/* 수신인 목록일때 */}
-            <div className={`message-send-container ${props.componentType === 'receiver' ? 'receiver' : ''}`}>
-
+            
+            <div className="message-send-container">
             
                 <ul className="message-send-inbox">
                     {
@@ -97,16 +88,14 @@ const ReceiverList = (props) => {
                         :''
                     }
                 </ul>
-                { 
-                    props.componentType !== 'inbox' ? 
-                        <>
-                            <div className="inbox-btn-box">
-                                <button className="message-btn orange" onClick={onAddReceiverMessage}>수신인등록</button> 
-                            </div>
-                        </>
-                        
-                    : '' 
+                {
+                    props.componentType === 'receiver' ? 
+                        <div className="inbox-btn-box">
+                            <button className="message-btn orange" onClick={onAddReceiverMessage}>수신인등록</button> 
+                        </div>
+                    : ''
                 }
+                
             </div>
         </>
     );
