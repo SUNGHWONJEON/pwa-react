@@ -40,21 +40,21 @@
     <button onclick="subscribe()">알림알림</button>
     <script>
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', async () => {
-                let sw = await navigator.serviceWorker.register('./sw.js');
-                console.log(sw);
-            });
-        } 
+        // if ('serviceWorker' in navigator) {
+        //     window.addEventListener('load', async () => {
+        //         let sw = await navigator.serviceWorker.register('./sw.js');
+        //         console.log(sw);
+        //     });
+        // } 
 
-        async function subscribe() {
-            let sw = await navigator.serviceWorker.ready;
-            let push = await sw.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: 'BG9vtHURc8lCXqh70YQ6QZCgKFQYLaK5kOceXGTatPs1nRkiyf10gY25zZHQQOjZfzSaHi1BBnaYOYmCOAq7_B0'
-            })
-            console.log('sbscribe push : ' + JSON.stringify(push));
-        }
+        // async function subscribe() {
+        //     let sw = await navigator.serviceWorker.ready;
+        //     let push = await sw.pushManager.subscribe({
+        //         userVisibleOnly: true,
+        //         applicationServerKey: 'BG9vtHURc8lCXqh70YQ6QZCgKFQYLaK5kOceXGTatPs1nRkiyf10gY25zZHQQOjZfzSaHi1BBnaYOYmCOAq7_B0'
+        //     })
+        //     console.log('sbscribe push : ' + JSON.stringify(push));
+        // }
 
         
 
