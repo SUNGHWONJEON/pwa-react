@@ -64,12 +64,7 @@ const MessageMain = (props) => {
         }
     }
 
-    const sendSMS = () => {
-        const text = '문자보내기\nSMS SEND TEST';
-        const phoneNumber = '01082789969'; // 전화번호
-        const url = 'sms:' + phoneNumber + (checkMobile() === 'ios' ? '&' : '?') + 'body=' + encodeURIComponent(text);
-        window.location.href = url;
-    }
+    
     
     return(
         <>
@@ -129,7 +124,7 @@ const MessageMain = (props) => {
 
                 </ul>
             </div>
-            <button onClick={sendSMS}>---메시지 보내기---</button>
+            
         </>
     );
 };

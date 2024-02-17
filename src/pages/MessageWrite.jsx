@@ -159,6 +159,7 @@ const MessageWrite = (props) => {
     const onGetFile = (e) => {
         //첨부파일 배열에 담기
         const files = Array.from(e.target.files);
+        
         console.log('files[0] : ' + JSON.stringify(files));
         if(files[0]){
             //이미지가 있을때 url첨부하여 미리보기로 보이기
@@ -166,6 +167,38 @@ const MessageWrite = (props) => {
 
         const newAttachData = files.map(f => {
             const blob = new Blob([f], { type: f.type }); // Blob 생성자에 배열을 전달하여 Blob 객체 생성
+            console.log('type : ' + blob.type);
+            const blobType = blob.type.split('/').shift();
+            if(blobType === 'video'){
+                const blobElement = document.createElement(blobType);
+                blobElement.addEventListener('loadedmetadata', () => {
+                    const durationInSeconds = blobElement.duration;
+                    const durationInMinutes = Math.floor(durationInSeconds / 60);
+                    const remainingSeconds = Math.floor(durationInSeconds % 60);
+                    console.log(`${blobType}  길이: ${durationInMinutes}분 ${remainingSeconds}초`);
+                    blobElement.remove();
+                });
+
+                blobElement.src = URL.createObjectURL(f);
+                
+                blobElement.style.display = 'none';
+            }else if(blobType === 'audio') {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const reader = new FileReader();
+
+                reader.onload = (event) => {
+                    audioContext.decodeAudioData(event.target.result, (buffer) => {
+                        const durationInSeconds = buffer.duration;
+                        const durationInMinutes = Math.floor(durationInSeconds / 60);
+                        const remainingSeconds = Math.floor(durationInSeconds % 60);
+                        console.log(`음성 길이: ${durationInMinutes}분 ${remainingSeconds}초`);
+                    });
+                };
+
+                reader.readAsArrayBuffer(f);
+            }
+            
+
             return {
                 attachSize: blob.size,
                 attachType: blob.type,
@@ -173,17 +206,20 @@ const MessageWrite = (props) => {
                 attach: blob
             };
         });
-
-        const tempCurrentData = {
-            ...currentData,
-            msgAttach: [
-                ...currentData.msgAttach,
-                ...newAttachData
-            ]
-        };
+        if(newAttachData && newAttachData.length > 0) {
+            const tempCurrentData = {
+                ...currentData,
+                msgAttach: [
+                    ...currentData.msgAttach,
+                    ...newAttachData
+                ]
+            };
+            
+            setCurrentData(tempCurrentData);
+            console.log('getFile == tempCurrentData : ' + JSON.stringify(tempCurrentData));
+        }
         
-        setCurrentData(tempCurrentData);
-        console.log('getFile == tempCurrentData : ' + JSON.stringify(tempCurrentData));
+        
         //console.log('getFile == currentData : ' + JSON.stringify(currentData)); //=>바로 적용이 안돼서 확인 불가 useEffect로 확인해야만 함
     }
 
@@ -288,14 +324,23 @@ const MessageWrite = (props) => {
                     </div>
                     
                     {/* 첨부하기 */}
+                    {/* <div>
+                        <div>???????????????????????????????</div>
+                        <input type="file" accept="image/*" capture="camera" />카메라
+                        <input type="file" accept="video/*" capture="camcorder" />캠코더
+                        <input type="file" accept="audio/*"  capture="microphone" />녹음
+                    </div> */}
                     <div className="message-box attach">
                         <div className="message-attach-btn-box">
-
+                            <input type="file" accept="image/*" onChange={onGetFile} capture="camera" />카메라
+                            <input type="file" accept="video/*" onChange={onGetFile} capture="camcorder" />캠코더
+                            <input type="file" accept="audio/*"  onChange={onGetFile} capture="microphone" />녹음
+{/* 
                             <input type="file" className="message-btn-attach" onChange={onGetFile} multiple="multiple"
                                 name="attachFile" id="upload-file-img"  hidden/>
                             <label htmlFor="upload-file-img">
                                 <img src="/img/add_file.png" className="message-btn-attach-img" />
-                            </label>
+                            </label> */}
                             
                             {/* 음성녹음 */}
                             <AudioRecorder className="message-btn-attach" getAudioFile={getAudioFile}/>
