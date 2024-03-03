@@ -161,7 +161,8 @@
         width: 100%;
         display: flex;
         justify-content: space-between;
-
+        flex-direction: column;
+        
         .message-btn-attach {
             width: 49%;
             padding: 2rem 0;

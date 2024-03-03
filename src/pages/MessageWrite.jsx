@@ -324,14 +324,10 @@ const MessageWrite = (props) => {
                     </div>
                     
                     {/* 첨부하기 */}
-                    {/* <div>
-                        <div>???????????????????????????????</div>
-                        <input type="file" accept="image/*" capture="camera" />카메라
-                        <input type="file" accept="video/*" capture="camcorder" />캠코더
-                        <input type="file" accept="audio/*"  capture="microphone" />녹음
-                    </div> */}
+                    
                     <div className="message-box attach">
                         <div className="message-attach-btn-box">
+                            
                             <input type="file" accept="image/*" onChange={onGetFile} capture="camera" />카메라
                             <input type="file" accept="video/*" onChange={onGetFile} capture="camcorder" />캠코더
                             <input type="file" accept="audio/*"  onChange={onGetFile} capture="microphone" />녹음
